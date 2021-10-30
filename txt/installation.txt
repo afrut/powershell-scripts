@@ -1,3 +1,5 @@
 Install Java JDK 1.8 (8) or 11
-Download Scala and sbt
+Download scala-2.12.15 and 
+Download spark-3.0.3-bin-hadoop2.7
+Download hadoop-2.7.7 for winutils
 Run env.cmd to setup environment variables
