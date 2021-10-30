@@ -10,9 +10,9 @@
 #
 #----------------------------------------------------------------------
 # clear screen
-clear
+Clear-Host
 
 # access functions in this file
 . "func.ps1"
 
-showFiles -sortLastWriteTime -ext $args[0]
+showFiles -SortLastWriteTime -Extension ".txt" -Recurse

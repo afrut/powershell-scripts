@@ -10,23 +10,23 @@
 # Show all files in a folder with a specific extension
 #
 #----------------------------------------------------------------------
-function showFiles
+function ShowFiles
 {
     # check for arguments passed in and declare default values
     param
     (
-        [switch]$recurse            # show all files in all subdirectories if true
-      , [switch]$sortLastWriteTime  # sort all files by last write time if true
-      , $dirPath = ".\"
-      , $ext = ""
+        [switch]$Recurse            # show all files in all subdirectories if true
+      , [switch]$SortLastWriteTime  # sort all files by last write time if true
+      , $Path = "."
+      , $Extension = ""
     )
 
     # check input parameters to determine behavior
-    if($recurse)                {write-host "Recursive search"          }
-    if(-not $recurse)           {write-host "Non-recursive search"      }
-    if($sortLastWriteTime)      {write-host "Sort by last write time"   }
-    if(-not $sortLastWriteTime) {write-host "No sort"                   }
-    write-host "Showing $($ext) files"
+    if($Recurse)                {Write-Host "Recursive search"          }
+    if(-not $Recurse)           {Write-Host "Non-recursive search"      }
+    if($SortLastWriteTime)      {Write-Host "Sort by last write time"   }
+    if(-not $SortLastWriteTime) {Write-Host "No sort"                   }
+    Write-Host "Showing $($Extension) files"
 
-    get-childitem -path $dirPath -filter "*_prd"
+    Get-Childitem -Path $Path -Filter "*$Extension"
 }
