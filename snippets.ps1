@@ -7,7 +7,7 @@ Clear-Host
 Write-Host "Hello, World!"
 
 $myvar = "foo"                          # a string variable
-$myint = 100                             # an integer variable
+$myint = 100                            # an integer variable
 $array1 = @(1,2,3,4)                    # an integer array with initialization
 $array2 = New-Object string[] 3         # a string array without initialization
 $map1 = @{foo = 0; bar = 1; baz = 2}    # a map with initilization
@@ -26,83 +26,56 @@ for($cnt = 0; $cnt -lt $array2.length; $cnt++)
 $cnt = 0
 while($cnt -lt $myint)
 {
-    $elem = Get-Random -Maximum 999 # get a random integer with a maximum of 999
-    if($elem % 2 -eq 0)             # if the random integer is even add it to the lsit
+    $elem = Get-Random -Maximum 999     # get a random integer with a maximum of 999
+    if($elem % 2 -eq 0)                 # if the random integer is even add it to the lsit
     {
         $list.Add($elem)
     }
     $cnt++
 }
 Write-Host "Number of elements added: $($list.Count)"
+Write-Host ""
 
-# recursively search for all files in the current directory with a
-# file depth of not more than 2 and include hidden/system files
-#Get-ChildItem -Path '.\' -Recurse -Depth 2 -Force
-<# TODO:
-select-object
-foreach-object
-#>
+# Recursively search for all files in the current directory with a
+# file depth of not more than 2 and include hidden/system files.
+$files = Get-ChildItem -Path "." -Recurse -Depth 2 -Force
 
+# For every child of this directory
+$files = New-Object Collections.Generic.List[Object]
+$dirs = New-Object Collections.Generic.List[Object]
+Get-ChildItem -Path "." -Force | ForEach-Object {
+    # Check if the current object is a directory
+     if(Test-Path -Path $_.FullName -PathType Container)
+     {
+         $dirs.Add($_)
 
+         # If the current directory does not start its name with "."
+        if($_.Name[0] -ne ".")
+        {
+            # Recursively search it and add its files to the list of files.
+            Get-ChildItem -Path $_.FullName -Force | ForEach-Object {$files.Add($_)}
+        }
+     }
+     # If it is not, add this file to the list.
+     else {$files.Add($_)}
+}
 
+# Write to output file.
+$files | ForEach-Object {$_.FullName} | Out-File -File outputs\all-files.txt
 
-<#
-#----------------------------------------------------------------------
-#
-# Getting child items in a directory
-#
-#----------------------------------------------------------------------
+# Print full path of all ps1 files.
+Write-Host "All ps1 files:"
+$files | Where-Object {$_.Extension -eq ".ps1" } | ForEach-Object { Write-Host $_.FullName }
+Write-Host ""
 
-# recursively search in a specified directory for files that match
-# a single string pattern and return only their names
-Get-ChildItem -Path '.\' -Recurse -Filter '*.py' -Name
+# Alternatively, search for all files that match certain regex patterns.
+$exts = @("*.ps1", "*.cmd")
+$srcfiles = Get-ChildItem -Path "." -Recurse -Include $exts
+$srcfiles | ForEach-Object {$_.FullName} | Out-File -File outputs\source-files.txt
 
-# recursively search in a specified directory for files
-# that include the specified strings patterns
-$ext = @('*.cpp','*.py','hello','snippets')
-Get-ChildItem -Path 'D:\src\' -Recurse -Include $ext
-
-# recursively search in a specified directory for files
-# that that do not include certain string patterns
-$ext = @('*.py')
-Get-ChildItem -Path 'D:\src\python\' -Recurse -Exclude $ext
-#>
-
-
-
-
-
-#----------------------------------------------------------------------
-#
-# Using the sort object
-#
-#---------------------------------------------------------------------
-# $ret = Get-ChildItem -Path 'D:\src' -Recurse -Exclude $ext
-# Write-Host $ret.GetType()
-
-# something different
-
-
-
-
-
-
-
-
-
-## list all files and sort by last write time
-#Get-ChildItem D:\src\learn\python -recurse | sort lastwritetime
-#
-## loop through each file returned
-#Get-ChildItem D:\src\learn\python -recurse -filter *.py |
-#foreach-object {
-#
-#    # write the name of the file
-#    write-host $_.name;
-#
-#    # write the name of the file with full path
-#    write-host $_.fullname;
-#
-#    # write the type of the file
-#    write-host $_.gettype();
-#}
+# Get all text files and sort by lastwritetime
+$files = Get-ChildItem -Path ".\outputs" | Where-Object {$_.Extension -eq ".txt"} |
+    Sort-Object LastWriteTime -Descending
+$files | ForEach-Object {$_.FullName} | Out-File -File "./outputs/text-files-sorted.txt"
+Write-Host "All text files sorted in descending order of modified time:"
+$files | ForEach-Object {$_.FullName} | Write-Host
