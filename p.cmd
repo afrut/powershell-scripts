@@ -1,3 +1,3 @@
 cls
-git push %GITHUB-REPO%powershell
+git push %GITHUB-REPO%powershell-scripts
 git pull
