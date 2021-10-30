@@ -79,3 +79,6 @@ $files = Get-ChildItem -Path ".\outputs" | Where-Object {$_.Extension -eq ".txt"
 $files | ForEach-Object {$_.FullName} | Out-File -File "./outputs/text-files-sorted.txt"
 Write-Host "All text files sorted in descending order of modified time:"
 $files | ForEach-Object {$_.FullName} | Write-Host
+
+# Get content of a file.
+$content = Get-Content "outputs/source-files.txt"
