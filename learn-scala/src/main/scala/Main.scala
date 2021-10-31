@@ -34,6 +34,12 @@ object Main extends App {
     println(s"${fmt.format(dt)}: $msg")
   }
   log(s"a = $a")
+
+  // A method to determine of an integer is odd or even.
+  def oddOrEven(p: Int): Boolean = p % 2 match {
+    case 0 => true
+    case _ => false
+  }
   
   // A conditional statement.
   val random = new scala.util.Random
@@ -70,7 +76,7 @@ object Main extends App {
   log(stringOrInt(msg))
   log(stringOrInt(1.1))
 
-  // A for-loop
+  // A for-loop.
   val ls = scala.collection.mutable.ListBuffer.empty[Int]   // a mutable linked-list
   for (cnt <- 0 to 9) {
     ls.addOne(cnt)
@@ -78,8 +84,34 @@ object Main extends App {
   log(ls.toString)
 
   // A for-expression can be used to a apply a user-defined function to a
-  // collection
+  // collection.
   val lsLine = for(x <- ls) yield {linePt(2, 3)(x)}
   log(lsLine.toString)
+
+  // A while loop.
+  var found = false
+  ls.clear()
+  while(!found) {
+    r = random.nextInt(10)
+    ls.addOne(r)
+    found = oddOrEven(r)
+  }
+  log(s"Found an even number. All numbers generated: ${ls.toString}")
+
+  // A do-while loop.
+  ls.clear()
+  do{
+    r = random.nextInt(10)
+    ls.addOne(r)
+    found = oddOrEven(r)
+  } while(!found)
+  log(s"Found an even number. All numbers generated: ${ls.toString}")
+
+  // Basic exception handling.
+  try {
+    b = 1/ 0
+  } catch {
+    case ae: ArithmeticException => log(ae.toString)
+  }
 
 }
