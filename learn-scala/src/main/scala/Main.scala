@@ -1,4 +1,5 @@
 import java.util.Calendar
+import java.text.SimpleDateFormat
 
 object Main extends App {
   // Type declarations are optional.
@@ -28,25 +29,57 @@ object Main extends App {
 
   // A method with no return value.
   def log(msg: String): Unit = {
-    println(s"${Calendar.getInstance().getTime()}: $msg")
+    val dt = Calendar.getInstance().getTime()
+    val fmt = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
+    println(s"${fmt.format(dt)}: $msg")
   }
   log(s"a = $a")
   
   // A conditional statement.
   val random = new scala.util.Random
   var r = 0 + random.nextInt(20)
-  println(s"r = $r")
+  log(s"r = $r")
   if(a < r) {
-      println("a < r")
+    log("a < r")
   }
   else if(a > r) {
-    println("a > r")
+    log("a > r")
   }
   else {
-    println("a == r")
+    log("a == r")
   }
 
   // if/else returns a value
   val c = if (a > r) a else r
-  println(s"r = $r")
+  log(s"r = $r")
+
+  // Alternatively, a match statement can be used.
+  var msg = a < r match {
+    case true => "a < r"
+    case false => "a >= r"
+  }
+  log(msg)
+
+  // The match statement can be used to infer type.
+  def stringOrInt(x: Any): String = x match {
+    case s: String => s"$x is a String"
+    case i: Int => s"$x is an Int"
+    case _ => s"$x neither String nor Int"
+  }
+  log(stringOrInt(a))
+  log(stringOrInt(msg))
+  log(stringOrInt(1.1))
+
+  // A for-loop
+  val ls = scala.collection.mutable.ListBuffer.empty[Int]   // a mutable linked-list
+  for (cnt <- 0 to 9) {
+    ls.addOne(cnt)
+  }
+  log(ls.toString)
+
+  // A for-expression can be used to a apply a user-defined function to a
+  // collection
+  val lsLine = for(x <- ls) yield {linePt(2, 3)(x)}
+  log(lsLine.toString)
+
 }
