@@ -64,7 +64,7 @@ object Main extends App {
   log(s"r = $r")
 
   // Alternatively, a match statement can be used.
-  msg = a < r match {
+  var msg = a < r match {
     case true => "a < r"
     case false => "a >= r"
   }
@@ -108,7 +108,7 @@ object Main extends App {
   log(s"The type of ls is ${ls.getClass}")
 
   // A for loop that loops through every element
-  var msg = ""
+  msg = ""
   for (x <- ls) msg += s"$x,"
   log(s"ls = ${msg.dropRight(1)}")    // Drop 1 character starting from the right of string msg
 
@@ -151,8 +151,12 @@ object Main extends App {
   }
 
   // Create an instance of type Person.
-  val person = new Person("John", "Smith")
-  log(person.fullName())
+  val person1 = new Person("John", "Smith")
+  log(person1.fullName())
+
+  // Create an instance of Person with named parameters.
+  val person2 = new Person(lastName = "Smith", firstName = "John")
+  log(person2.fullName())
 
   // Create a Tuple
   val tpl1 = ("five", 6, 7)
