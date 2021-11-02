@@ -1,3 +1,4 @@
+// A package that demonstrates basics in scala
 package basics
 
 object Main {

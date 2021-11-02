@@ -45,6 +45,10 @@ object Main {
     println(s"timesTwo(a) = ${timesTwo(a)}")
     println(s"add(a, b) = ${add(a, b)}")
 
+    // An anonymous function with specified return type
+    val toString = (x: Any) => {x.toString} :String
+    println(toString(toString))
+
     // Define a method within a function.
     // Equation of a line.
     def f(m: Double, b: Double)(x: Double): Double = {

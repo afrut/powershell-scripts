@@ -6,4 +6,7 @@ object Main extends App {
   classes.Main.run()
   tuples.Main.run()
   // userinput.Main.run()
+  enumerations.Main.run()
+  shapes.Main.run()
+  collections.Main.run()
 }
