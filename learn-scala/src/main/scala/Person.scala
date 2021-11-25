@@ -23,7 +23,3 @@ class Person(var firstName: String
   def fullName() = s"$firstName $lastName"
   def printFullName() = println(s"$firstName $lastName")
 }
-
-// A class that represents a 2D point.
-// The constructor has default parameters that default to the origin.
-class Point2D (var x: Int = 0, var y: Int = 0) {}
