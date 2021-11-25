@@ -1,5 +1,8 @@
-Install Java JDK 1.8 (8) or 11
-Download scala-2.12.15 and 
-Download spark-3.0.3-bin-hadoop2.7
-Download hadoop-2.7.7 for winutils
-Run env.cmd to setup environment variables
+This project uses powershell.
+
+Install Java JDK 1.8 (8) or 11. Note directory path.
+Download scala-2.12.15. Note directory path.
+Download spark-3.0.3-bin-hadoop2.7. Note directory path.
+Download hadoop-2.7.7 for winutils. Note directory path.
+Modify env.ps1 to use include the directory paths noted above.
+Run env.ps1 to setup environment variables.
