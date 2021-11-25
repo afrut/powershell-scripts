@@ -79,6 +79,40 @@ $files = Get-ChildItem -Path ".\outputs" | Where-Object {$_.Extension -eq ".txt"
 $files | ForEach-Object {$_.FullName} | Out-File -File "./outputs/text-files-sorted.txt"
 Write-Host "All text files sorted in descending order of modified time:"
 $files | ForEach-Object {$_.FullName} | Write-Host
+Write-Host ""
+
+# Get all text files and sort by full path and file name.
+$files = Get-ChildItem -Path ".\outputs" | Where-Object {$_.Extension -eq ".txt"} |
+    Sort-Object FullName
+$files | ForEach-Object {$_.FullName} | Out-File -File "./outputs/text-files-sorted.txt"
+Write-Host "All text files sorted by path and name:"
+$files | ForEach-Object {$_.FullName} | Write-Host
 
 # Get content of a file.
 $content = Get-Content "outputs/source-files.txt"
+
+# Create a new directory
+$newDir = New-Item -Path ".\outputs\" -ItemType "directory" -Name "NewDirectory" -Force
+
+# Create a new file and disregard its output.
+New-Item -Path "outputs\" -ItemType "file" -Name "NewFile" -Force | Out-Null
+New-Item -Path "outputs\NewDirectory" -ItemType "file" -Name "NewFile" -Force | Out-Null
+New-Item -Path "outputs\NewDirectory" -ItemType "directory" -Name "AnotherNewDirectory" -Force | Out-Null
+
+# Access the first argument to this script
+$firstArg = $args[0]
+
+# Get the type of a variable.
+$type = $newDir.GetType()
+
+# Get the handle to a file.
+$newFile = Get-Item(".\outputs\NewFile")
+
+# Append some content to a file.
+"Some content" | Out-File $newFile -Append
+
+# Delete an item.
+Remove-Item -Path ".\outputs\NewFile"
+
+# Delete a directory and all its contents.
+Remove-Item -path ".\outputs\NewDirectory" -Recurse
