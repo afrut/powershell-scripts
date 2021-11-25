@@ -36,7 +36,7 @@ object Main {
     println(s"    abInts(2) = ${abInts(2)}")              // Access 3rd element of array buffer
 
     // List is an immutable type based on a singly-linked list.
-    // Modification will create a new List. 
+    // Modification will create a new List.
     // NOTE: Since this type is based on a singly-linked list,
     // appending or accessing by index is inefficient. Instead use
     // Vector for an immutable alternative or ArrayBuffer for a
@@ -112,20 +112,20 @@ object Main {
     // Some common sequence methods
     println("Some common sequence methods:")
     var msg = ""
-    val seq = Seq.range(0, 10)
-    val seq1 = (0 to 5).toSeq
-    seq.foreach((x) => msg += s"$x,")
-    msg = msg.dropRight(1)
-    val doubleSeq = seq.map(_ * 2)
-    val sumDoubleSeq = doubleSeq.reduce(_ + _)
-    val evenSeq = seq.filter(_ % 2 == 0)
-    val head = seq.head
-    val tail = seq.tail
-    val tail5 = seq.tail(5)
-    val seqTake3 = seq.take(3)
-    val seqTakeWhile = seq.takeWhile(_ < 4)
-    val seqDrop3 = seq.drop(3)
-    val seqDropWhile = seq.dropWhile(_ < 4)
+    val seq = Seq.range(0, 10)                              // A sequence with the numbers 0 to 9
+    val seq1 = (0 to 5).toSeq                               // A sequence with the numbers 0 to 4
+    seq.foreach((x) => msg += s"$x,")                       // Iterate through each element and build a csv of the elements
+    msg = msg.dropRight(1)                                  // Drop last character of the string
+    val doubleSeq = seq.map(_ * 2)                          // Multiply every element in sequence by 2
+    val sumDoubleSeq = doubleSeq.reduce(_ + _)              // Reduce all elements by summing them
+    val evenSeq = seq.filter(_ % 2 == 0)                    // Return elements whose modulo by 2 is 0
+    val head = seq.head                                     // The first element of the sequence
+    val tail = seq.tail                                     // All elements but the first element
+    val tail5 = seq.tail(5)                                 // The fifth element of the tail of the sequence
+    val seqTake3 = seq.take(3)                              // The first 3 elements of the sequence
+    val seqTakeWhile = seq.takeWhile(_ < 4)                 // All elements of the sequence less than 4
+    val seqDrop3 = seq.drop(3)                              // Remove the first 4 elements
+    val seqDropWhile = seq.dropWhile(_ < 4)                 // Remove all elements less than 4
     println(s"    seq = ${seq}")
     println(s"    seq1 = ${seq1}")
     println(s"    seq.foreach = $msg")
@@ -140,7 +140,39 @@ object Main {
     println(s"    seqDrop3 = ${seqDrop3}")
     println(s"    seqDropWhile = ${seqDropWhile}")
 
-    // TODO: common map methods
+    // Some common map methods
+    val m = Map(
+      1 -> "a",
+      2 -> "b",
+      3 -> "c",
+      4 -> "d"
+    )
+    println("Some common map methods")
+    println("    Iterating over map elements:")
+    for((key, value) <- m) println(s"        $key, $value")
+    println(s"    All keys: ${m.keys}")
+    println(s"    All values: ${m.values}")
+    println(s"    May keys contains 5? ${m.contains(5)}")
+    println(s"    Transform all values to uppercase: ${m.transform((k, v) => v.toUpperCase)}")
+    println(s"    Getting only specified keys: ${m.filterKeys(Set(1, 4)).toMap}")
+    println(s"    Taking first 3 elements: ${m.take(3)}")
+
+    val mutm = scala.collection.mutable.Map(
+      "AL" -> "Alabama",
+      "AK" -> "Alaska"
+      )
+    println(s"Operations on a mutable map: ${mutm}")
+    mutm += ("AZ" -> "Arizona")
+    println(s"    Element AZ added: ${mutm}")
+    mutm ++= Map("CO" -> "Colorado", "KY" -> "Kentucky")
+    println(s"    Elements CO and KY added: ${mutm}")
+    mutm -= "AL"
+    println(s"    Element AL removed: ${mutm}")
+    mutm --= List("AK", "AZ")
+    println(s"    Elements AK and AZ removed: ${mutm}")
+    mutm("KY") = "Kentucky, fried chicken"
+    println("    Modified element KY: "  + mutm("KY"))
+    println(s"    Return elements specified by a function: " + mutm.filterInPlace((key, value) => key == "KY"))
 
     println()
   }
