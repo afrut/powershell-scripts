@@ -35,3 +35,43 @@ class Point2DTests extends FunSuite {
     assert(p1.fastDistanceTo(p2) == sumsq(1.2 - 7.7, 5.3 - 3.4))
   }
 }
+
+class Vec2DTests extends FunSuite {
+  def sumsq(x: Double, y: Double) = pow(x, 2) + pow(y, 2)
+
+  test("the default coordinates of Vec2D are set correctly") {
+    val v = new Vec2D()
+    assert(v.x == 0 && v.y == 0)
+  }
+
+  test("a vector's coordinates can be changed") {
+    val v = new Vec2D(2, 1)
+    v.x = 3
+    v.y = 2
+    assert(v.x == 3 && v.y == 2)
+  }
+
+  test("the length of a vector is computed correctly") {
+    val v = new Vec2D(3.5, 7.3)
+    assert(v.length() == sqrt(sumsq(3.5, 7.3)))
+  }
+
+  test("a vector can be multiplied by a scalar correctly") {
+    val v = (new Vec2D(3.5, 7.3)).multiply(3.1)
+    assert(v.x == 3.5 * 3.1 && v.y == 7.3 * 3.1)
+  }
+
+  test("a vector can be normalized correctly") {
+    val v = new Vec2D(3.5, 7.3)
+    val n = v.normalize()
+    val len = sqrt(sumsq(3.5, 7.3))
+    assert((n.x == 3.5 / len) && (n.y == 7.3 / len))
+  }
+
+  test("a vector can be used to move a point") {
+    val v = new Vec2D(3.5, 7.3)
+    val p1 = new Point2D(6.6, 9.1)
+    val p2 = v.movePoint(p1)
+    assert(p2.x == 3.5 + 6.6 && p2.y == 7.3 + 9.1)
+  }
+}
