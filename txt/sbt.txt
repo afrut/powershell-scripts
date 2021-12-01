@@ -1,5 +1,11 @@
 Use sbt new scala/hello-world.g8 to create a new project.
 
 To use sbt, cd to the project directory containing the build.sbt file.
-In cmd, run sbt.
+In cmd, use sbt to enter sbt console.
 In sbt console, use ~run to re-run on every save file.
+In sbt console, use ~test to re-run tests on every save file.
+Alternatively, in cmd:
+    - sbt run to run once
+    - sbt ~run to run on any file save
+    - sbt test to run tests once
+    - sbt ~test to run all tests

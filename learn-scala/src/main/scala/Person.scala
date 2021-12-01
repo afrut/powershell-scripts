@@ -9,7 +9,8 @@ class Person(var firstName: String
   ,var lastName: String
   ,var gender: String) {
 
-  // An overloaded/auxiliary constructor. An auxiliary constructo must 
+  // An overloaded/auxiliary constructor. An auxiliary constructor must call the
+  // default constructor.
   def this(firstName: String, lastName: String) {
     this(firstName, lastName, "X")
   }
