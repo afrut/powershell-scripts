@@ -4,8 +4,7 @@ package veclib2d
 
 import scala.math.sqrt
 import scala.math.pow
-
-def sumsq(x: Double, y: Double) = pow(x, 2) + pow(y, 2)
+import func.Func.sumsq
 
 class Point2D(
   var x: Double = 0,
