@@ -116,3 +116,9 @@ Remove-Item -Path ".\outputs\NewFile"
 
 # Delete a directory and all its contents.
 Remove-Item -path ".\outputs\NewDirectory" -Recurse
+
+# Execute a regex search, retrieve matching value or group values.
+$url = "https://docs.github.com/en/get-started/getting-started-with-git/managing-remote-repositories"
+$result = ($url | Select-String 'https://([\w\.]*?\.com)')
+$matchvalue = $result.Matches.Groups[0].Value
+$firstgroup = $result.Matches.Groups[1].Value
