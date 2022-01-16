@@ -17,3 +17,6 @@ $StartInfo.Arguments = "-NoExit
 
 # Run a shortcut.
 Invoke-Item '.\resources\sample-shortcut.lnk'
+
+# Execute a powershell script from a shortcut.
+# powershell.exe -ExecutionPolicy Bypass -File PathToScript
