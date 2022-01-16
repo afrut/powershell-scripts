@@ -125,3 +125,10 @@ $firstgroup = $result.Matches.Groups[1].Value
 
 # ` escapes characters in strings.
 write-host "`$notAVariable"
+
+# Using a simple hashtable.
+$ht = [Environment]::GetEnvironmentVariables()
+$ht.Keys                                    # Keys of the hashtable.
+$ht.Values                                  # Values of the hashtable.
+$ht["PATH"]                                 # Access a value by its key.
+$ht.GetEnumerator() | Sort-Object Name      # Sort the hash table by the Name field.
