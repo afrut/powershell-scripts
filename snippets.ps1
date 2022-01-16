@@ -122,3 +122,6 @@ $url = "https://docs.github.com/en/get-started/getting-started-with-git/managing
 $result = ($url | Select-String 'https://([\w\.]*?\.com)')
 $matchvalue = $result.Matches.Groups[0].Value
 $firstgroup = $result.Matches.Groups[1].Value
+
+# ` escapes characters in strings.
+write-host "`$notAVariable"
