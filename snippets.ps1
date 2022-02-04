@@ -105,6 +105,9 @@ $firstArg = $args[0]
 # Get the type of a variable.
 $type = $newDir.GetType()
 
+# Get the members of an object.
+$newDir | Get-Member
+
 # Get the handle to a file.
 $newFile = Get-Item(".\outputs\NewFile")
 
@@ -132,3 +135,11 @@ $ht.Keys                                    # Keys of the hashtable.
 $ht.Values                                  # Values of the hashtable.
 $ht["PATH"]                                 # Access a value by its key.
 $ht.GetEnumerator() | Sort-Object Name      # Sort the hash table by the Name field.
+write-host ""
+
+# Request user input. Stores as string initially.
+#$numstr = read-host "Enter a number"
+
+# Cast to int.
+#$num = $numstr.ToInt32($null)
+#$num = $num -as [int]
