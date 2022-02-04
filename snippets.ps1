@@ -4,7 +4,7 @@
 Clear-Host
 
 # print to console
-Write-Host "Hello, World!"
+Write-Host "Hello, World!" -ForegroundColor Green
 
 $myvar = "foo"                          # a string variable
 $myint = 100                            # an integer variable
