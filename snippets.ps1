@@ -21,6 +21,7 @@ for($cnt = 0; $cnt -lt $array2.length; $cnt++)
     $map2.add($cnt, $elem)              # add an element to a map
     $array2[$cnt] = $elem               # change an element in an array
 }
+$map2.Clear()                           # delete all elements from the map
 
 # A while loop
 $cnt = 0
