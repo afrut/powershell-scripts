@@ -30,15 +30,13 @@ try
     Write-Host "Now monitoring $srcPath"
     $watcher.EnableRaisingEvents = $true
 
-    # Keep powershell busy while monitoring so it does not accept other input
+    # Create a dictionary whose keys are filenames that have been created/deleted/modified
+    $filenames = @{}
     do
     {
         $waitevent = Wait-Event -Timeout $timeout
-        if($waitevent -ne $null)
+        if($null -ne $waitevent)
         {
-            # Create a dictionary whose keys are filenames that have been created/deleted/modified
-            $filenames = @{}
-
             # Wait for all events to fire after one event has fired
             # Write-Host "Sleeping"
             # Start-Sleep -Seconds $timeout
@@ -52,18 +50,23 @@ try
                 Remove-Event -EventIdentifier $events[$n].EventIdentifier
             }
 
-            # Loop through all filenames
-            $N = $filenames.Length
-            foreach($key in $filenames.keys)
-            {
-                # Execute some code to do something with the filenames
-                Write-Host "$((Get-Date).ToString("yyyy-MM-dd hh:mm:ss:fff")) $key changed"
-            }
-
-            # Clear the hashtable for when the next set of events fire
-            $filenames = $filenames.clear()
         }
-
+        else
+        {
+            # Loop through all filenames
+            $N = $filenames.Count
+            if($N -gt 0)
+            {
+                foreach($key in $filenames.keys)
+                {
+                    # Execute some code to do something with the filenames
+                    Write-Host "$((Get-Date).ToString("yyyy-MM-dd hh:mm:ss:fff")) $key changed"
+                }
+            }
+            
+            # Clear the hashtable for when the next set of events fire
+            $filenames.clear()
+        }
     } while ($true)
 }
 finally
