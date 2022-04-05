@@ -1,9 +1,15 @@
 # Based on: https://powershell.one/tricks/filesystem/filesystemwatcher
+# Call with default parameters: .\watchFiles.ps1
+# Specify a diretory to watch: .\watchFiles.ps1 -WatchPath "..\path\to\dir\"
+param(
+    $WatchPath=".\testdir\" # Path of directory to watch
+)
+
 Clear-Host
 try
 {
     # Directory to watch
-    $srcPath = (Get-Item ".\testdir").FullName
+    $WatchPath = (Get-Item $WatchPath).FullName
     $fileFilter = "*.*"     # Pattern for files to watch for
     $includeSubDirs = $true # Watch subdirectories as well
 
@@ -14,7 +20,7 @@ try
     $timeout = 0.2          # Poll for any event fired every 200 milliseconds
 
     # Create the FileSystemWatcher object
-    $watcher = New-Object -TypeName IO.FileSystemWatcher -ArgumentList $srcPath, $fileFilter `
+    $watcher = New-Object -TypeName IO.FileSystemWatcher -ArgumentList $WatchPath, $fileFilter `
         -Property @{IncludeSubdirectories = $includeSubDirs;
             NotifyFilter = $properties}
 
@@ -27,7 +33,7 @@ try
     }
 
     # Start monitoring
-    Write-Host "Now monitoring $srcPath"
+    Write-Host "Now monitoring $WatchPath"
     $watcher.EnableRaisingEvents = $true
 
     # Create a dictionary whose keys are filenames that have been created/deleted/modified
@@ -61,6 +67,8 @@ try
                 {
                     # Execute some code to do something with the filenames
                     Write-Host "$((Get-Date).ToString("yyyy-MM-dd hh:mm:ss:fff")) $key changed"
+
+                    # NOTE: Write additional commands here
                 }
             }
             
