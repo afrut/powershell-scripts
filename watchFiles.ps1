@@ -2,63 +2,68 @@
 Clear-Host
 try
 {
-    $path = (Get-Item ".\").FullName # Path to watch
-    $fileFilter = "*" # Pattern for files to watch for
+    # Directory to watch
+    $srcPath = (Get-Item ".\testdir").FullName
+    $fileFilter = "*.*"     # Pattern for files to watch for
     $includeSubDirs = $true # Watch subdirectories as well
+
+    # Properties of files to watch
     $properties = @([IO.NotifyFilters]::FileName
         ,[IO.NotifyFilters]::LastWrite `
     )
-    $timeout = 1000 # Timeout after 1 s without any changes
-    $changeTypes = @(
-        [System.IO.WatcherChangeTypes]::All
-        ,[System.IO.WatcherChangeTypes]::Created
-        ,[System.IO.WatcherChangeTypes]::Deleted
-        ,[System.IO.WatcherChangeTypes]::Changed
-        ,[System.IO.WatcherChangeTypes]::Renamed
-    )
+    $timeout = 0.2          # Poll for any event fired every 200 milliseconds
 
-    $watcher = New-Object -TypeName IO.FileSystemWatcher -ArgumentList $path, $fileFilter `
+    # Create the FileSystemWatcher object
+    $watcher = New-Object -TypeName IO.FileSystemWatcher -ArgumentList $srcPath, $fileFilter `
         -Property @{IncludeSubdirectories = $includeSubDirs;
             NotifyFilter = $properties}
 
-    # Define code to execute when a change is detected
-    $action = {
-        # change type information:
-        $details = $event.SourceEventArgs
-        $Name = $details.Name
-        $FullPath = $details.FullPath
-        $OldFullPath = $details.OldFullPath
-        $OldName = $details.OldName
-        
-        # type of change:
-        $ChangeType = $details.ChangeType
-        
-        # when the change occured:
-        $Timestamp = $event.TimeGenerated
-
-        $message = "{0} was {1} at {2}" -f $FullPath, $ChangeType, $Timestamp
-        Write-Host "----------------------------------------------------------------------"
-        Write-Host $message
-    }
-
-
     # Register event handlers
     $handlers = . {
-        Register-ObjectEvent -InputObject $watcher -EventName Changed  -Action $action 
-        Register-ObjectEvent -InputObject $watcher -EventName Created  -Action $action 
-        Register-ObjectEvent -InputObject $watcher -EventName Deleted  -Action $action 
-        Register-ObjectEvent -InputObject $watcher -EventName Renamed  -Action $action 
+        Register-ObjectEvent -InputObject $watcher -EventName Changed
+        Register-ObjectEvent -InputObject $watcher -EventName Created
+        Register-ObjectEvent -InputObject $watcher -EventName Deleted
+        Register-ObjectEvent -InputObject $watcher -EventName Renamed
     }
 
     # Start monitoring
-    Write-Host "Now monitoring $path"
+    Write-Host "Now monitoring $srcPath"
     $watcher.EnableRaisingEvents = $true
 
     # Keep powershell busy while monitoring so it does not accept other input
     do
     {
-        Wait-Event -Timeout 1
-        Write-Host "." -NoNewLine
+        $waitevent = Wait-Event -Timeout $timeout
+        if($waitevent -ne $null)
+        {
+            # Create a dictionary whose keys are filenames that have been created/deleted/modified
+            $filenames = @{}
+
+            # Wait for all events to fire after one event has fired
+            # Write-Host "Sleeping"
+            # Start-Sleep -Seconds $timeout
+            # Write-Host "Up"
+            $events = Get-Event
+
+            # Loop through all events and get filenames
+            for($n = 0; $n -lt $events.Length; $n++)
+            {
+                $filenames[$events[$n].SourceEventArgs.Name] = ""
+                Remove-Event -EventIdentifier $events[$n].EventIdentifier
+            }
+
+            # Loop through all filenames
+            $N = $filenames.Length
+            foreach($key in $filenames.keys)
+            {
+                # Execute some code to do something with the filenames
+                Write-Host "$((Get-Date).ToString("yyyy-MM-dd hh:mm:ss:fff")) $key changed"
+            }
+
+            # Clear the hashtable for when the next set of events fire
+            $filenames = $filenames.clear()
+        }
+
     } while ($true)
 }
 finally
@@ -68,7 +73,7 @@ finally
 
     # remove the event handlers
     $handlers | ForEach-Object {
-    Unregister-Event -SourceIdentifier $_.Name
+        Unregister-Event -SourceIdentifier $_.Name
     }
 
     # event handlers are technically implemented as a special kind
