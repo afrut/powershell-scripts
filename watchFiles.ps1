@@ -2,7 +2,7 @@
 # Call with default parameters: .\watchFiles.ps1
 # Specify a diretory to watch: .\watchFiles.ps1 -WatchPath "..\path\to\dir\"
 param(
-    $WatchPath=".\testdir\" # Path of directory to watch
+    $WatchPath="." # Path of directory to watch
 )
 
 Clear-Host
