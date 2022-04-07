@@ -18,5 +18,11 @@ $StartInfo.Arguments = "-NoExit
 # Run a shortcut.
 Invoke-Item '.\resources\sample-shortcut.lnk'
 
+# Start another powershell session and execute a script block.
+$scriptblk = {Write-Host "hello world"}
+$StartInfo.Arguments = "-NoExit" `
+    ,"-Command $scriptblk"
+[System.Diagnostics.Process]::Start($StartInfo)
+
 # Execute a powershell script from a shortcut.
 # powershell.exe -ExecutionPolicy Bypass -File PathToScript
