@@ -5,6 +5,7 @@
 param(
     $WatchPath=".\"         # Path of directory to watch
     ,$Command="powershell"  # Command/program to pass the file to
+    ,$Arguments=""          # Arguments to pass to the program
 )
 
 Clear-Host
@@ -74,7 +75,7 @@ try
 
                     # NOTE: Write additional commands here
                     Write-Host "$Command $WatchPath$key"
-                    Invoke-Expression "$Command $WatchPath$key"
+                    Invoke-Expression "$Command $WatchPath$key $Arguments"
                 }
             }
             
