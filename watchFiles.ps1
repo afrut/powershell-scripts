@@ -1,8 +1,10 @@
 # Based on: https://powershell.one/tricks/filesystem/filesystemwatcher
 # Call with default parameters: .\watchFiles.ps1
 # Specify a diretory to watch: .\watchFiles.ps1 -WatchPath "..\path\to\dir\"
+# Specify a command to pass the file to: .\watchFiles.ps1 -WatchPath "..\path\to\dir\" -Command programToRun
 param(
     $WatchPath="." # Path of directory to watch
+    ,$Command="powershell"
 )
 
 Clear-Host
@@ -65,10 +67,14 @@ try
             {
                 foreach($key in $filenames.keys)
                 {
+                    Clear-Host
+
                     # Execute some code to do something with the filenames
                     Write-Host "$((Get-Date).ToString("yyyy-MM-dd hh:mm:ss:fff")) $key changed"
 
                     # NOTE: Write additional commands here
+                    Write-Host "$Command $WatchPath$key"
+                    Invoke-Expression "$Command $WatchPath$key"
                 }
             }
             
