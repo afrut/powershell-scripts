@@ -3,15 +3,15 @@
 # Specify a diretory to watch: .\watchFiles.ps1 -WatchPath "..\path\to\dir\"
 # Specify a command to pass the file to: .\watchFiles.ps1 -WatchPath "..\path\to\dir\" -Command programToRun
 param(
-    $WatchPath="." # Path of directory to watch
-    ,$Command="powershell"
+    $WatchPath=".\"         # Path of directory to watch
+    ,$Command="powershell"  # Command/program to pass the file to
 )
 
 Clear-Host
 try
 {
     # Directory to watch
-    $WatchPath = (Get-Item $WatchPath).FullName
+    $WatchPath = "$((Get-Item $WatchPath).FullName)\"
     $fileFilter = "*.*"     # Pattern for files to watch for
     $includeSubDirs = $true # Watch subdirectories as well
 
