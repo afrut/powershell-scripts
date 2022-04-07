@@ -3,8 +3,8 @@
 # Specify a diretory to watch: .\watchFiles.ps1 -WatchPath "..\path\to\dir\"
 # Specify a command to pass the file to: .\watchFiles.ps1 -WatchPath "..\path\to\dir\" -Command programToRun
 param(
-    $WatchPath="." # Path of directory to watch
-    ,$Command="powershell"
+    $WatchPath=".\"         # Path of directory to watch
+    ,$Command="powershell"  # Command/program to pass the file to
 )
 
 Clear-Host
