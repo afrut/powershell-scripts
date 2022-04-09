@@ -2,10 +2,14 @@
 # Call with default parameters: .\watchFiles.ps1
 # Specify a diretory to watch: .\watchFiles.ps1 -WatchPath "..\path\to\dir\"
 # Specify a command to pass the file to: .\watchFiles.ps1 -WatchPath "..\path\to\dir\" -Command programToRun
+
+# Sample call
+# .\watchFiles.ps1 -WatchPath "testdir"-Command python -Arguments foo -FileFilters "^(.+).py$","^(.+).txt$"
 param(
     $WatchPath=".\"         # Path of directory to watch
     ,$Command="powershell"  # Command/program to pass the file to
     ,$Arguments=""          # Arguments to pass to the program
+    ,[string[]]$FileFilters=@("*.*")
 )
 
 Clear-Host
@@ -20,67 +24,87 @@ try
     $properties = @([IO.NotifyFilters]::FileName
         ,[IO.NotifyFilters]::LastWrite `
     )
-    $timeout = 0.2          # Poll for any event fired every 200 milliseconds
+    $timeout = 200          # Poll for any event fired every 200 milliseconds
 
     # Create the FileSystemWatcher object
     $watcher = New-Object -TypeName IO.FileSystemWatcher -ArgumentList $WatchPath, $fileFilter `
         -Property @{IncludeSubdirectories = $includeSubDirs;
             NotifyFilter = $properties}
 
+    # Create a timer 
+    $timer = [System.Timers.Timer]::new()
+    $timer.Interval = $timeout
+    $timer.AutoReset = $False
+    
     # Register event handlers
-    $handlers = . {
-        Register-ObjectEvent -InputObject $watcher -EventName Changed
-        Register-ObjectEvent -InputObject $watcher -EventName Created
-        Register-ObjectEvent -InputObject $watcher -EventName Deleted
-        Register-ObjectEvent -InputObject $watcher -EventName Renamed
-    }
-
-    # Start monitoring
-    Write-Host "Now monitoring $WatchPath"
-    $watcher.EnableRaisingEvents = $true
+    Register-ObjectEvent -InputObject $watcher -EventName Changed -SourceIdentifier "File.Changed"
+    Register-ObjectEvent -InputObject $watcher -EventName Created -SourceIdentifier "File.Created"
+    Register-ObjectEvent -InputObject $watcher -EventName Deleted -SourceIdentifier "File.Deleted"
+    Register-ObjectEvent -InputObject $watcher -EventName Renamed -SourceIdentifier "File.Renamed"
+    Register-ObjectEvent -InputObject $timer -EventName Elapsed -SourceIdentifier "Timer.Elapsed"
 
     # Create a dictionary whose keys are filenames that have been created/deleted/modified
     $filenames = @{}
+    
+    # Start monitoring
+    Write-Host "Now monitoring $WatchPath"
+    $timer.Start()
+    $watcher.EnableRaisingEvents = $true
+
+    # Main loop
     do
     {
-        $waitevent = Wait-Event -Timeout $timeout
-        if($null -ne $waitevent)
+        $waitevent = Wait-Event
+    
+        # Reset the timer every time an event is received
+        $timer.Stop()
+        $timer.Start()
+
+        # Get filenames and clear event queue.
+        $events = Get-Event
+        for($n = 0; $n -lt $events.Length; $n++)
         {
-            # Wait for all events to fire after one event has fired
-            # Write-Host "Sleeping"
-            # Start-Sleep -Seconds $timeout
-            # Write-Host "Up"
-            $events = Get-Event
+            $evt = $events[$n]
 
-            # Loop through all events and get filenames
-            for($n = 0; $n -lt $events.Length; $n++)
+            # Remove event from queue
+            Remove-Event -EventIdentifier $evt.EventIdentifier
+
+            # Process the events based on identifier
+            switch($evt.SourceIdentifier)
             {
-                $filenames[$events[$n].SourceEventArgs.Name] = ""
-                Remove-Event -EventIdentifier $events[$n].EventIdentifier
-            }
+                "File.Changed" {
+                    $filenames[$evt.SourceEventArgs.Name] = ""
+                }
 
-        }
-        else
-        {
-            # Loop through all filenames
-            $N = $filenames.Count
-            if($N -gt 0)
-            {
-                foreach($key in $filenames.keys)
-                {
-                    Clear-Host
+                "timer.Elapsed" {
+                    # If there are filenames stored
+                    $N = $filenames.Count
+                    if($N -gt 0)
+                    {
+                        foreach($key in $filenames.keys)
+                        {
+                            foreach($pattern in $FileFilters)
+                            {
+                                # Execute some code to do something with the filenames
+                                $matched = $key -match $pattern
+                                if($matched)
+                                {
+                                    # Execute some code to do something with the filenames
+                                    #Write-Host "$((Get-Date).ToString("yyyy-MM-dd hh:mm:ss:fff")) $Command $WatchPath$key $Arguments"
+                                    Invoke-Expression "$Command $WatchPath$key $Arguments"
+                                    break
+                                }
+                            }
+                        }
+                    }
 
-                    # Execute some code to do something with the filenames
-                    Write-Host "$((Get-Date).ToString("yyyy-MM-dd hh:mm:ss:fff")) $key changed"
+                    # Clear the hashtable for when the next set of events fire
+                    $filenames.clear()
 
-                    # NOTE: Write additional commands here
-                    Write-Host "$Command $WatchPath$key"
-                    Invoke-Expression "$Command $WatchPath$key $Arguments"
+                    # Restart the timer.
+                    $timer.Start()
                 }
             }
-            
-            # Clear the hashtable for when the next set of events fire
-            $filenames.clear()
         }
     } while ($true)
 }
@@ -89,14 +113,15 @@ finally
     # stop monitoring
     $watcher.EnableRaisingEvents = $false
 
-    # remove the event handlers
-    $handlers | ForEach-Object {
-        Unregister-Event -SourceIdentifier $_.Name
-    }
+    # Stop the timer.
+    $timer.Stop()
 
-    # event handlers are technically implemented as a special kind
-    # of background job, so remove the jobs now:
-    $handlers | Remove-Job
+    # remove the event handlers
+    Unregister-Event -SourceIdentifier "File.Changed"
+    Unregister-Event -SourceIdentifier "File.Created"
+    Unregister-Event -SourceIdentifier "File.Deleted"
+    Unregister-Event -SourceIdentifier "File.Renamed"
+    Unregister-Event -SourceIdentifier "Timer.Elapsed"
 
     # properly dispose the FileSystemWatcher:
     $watcher.Dispose()
