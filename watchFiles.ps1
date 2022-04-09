@@ -9,7 +9,8 @@ param(
     $WatchPath=".\"         # Path of directory to watch
     ,$Command="powershell"  # Command/program to pass the file to
     ,$Arguments=""          # Arguments to pass to the program
-    ,[string[]]$FileFilters=@("^.+\.ps1$")
+    ,[string[]]$FileFilters=@("^.+\..*$")
+    ,[switch]$Clear
 )
 
 Clear-Host
@@ -81,6 +82,7 @@ try
                     $N = $filenames.Count
                     if($N -gt 0)
                     {
+                        if($Clear) {Clear-Host}
                         foreach($key in $filenames.keys)
                         {
                             foreach($pattern in $FileFilters)
