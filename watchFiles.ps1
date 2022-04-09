@@ -4,12 +4,12 @@
 # Specify a command to pass the file to: .\watchFiles.ps1 -WatchPath "..\path\to\dir\" -Command programToRun
 
 # Sample call
-# .\watchFiles.ps1 -WatchPath "testdir"-Command python -Arguments foo -FileFilters "^(.+).py$","^(.+).txt$"
+# .\watchFiles.ps1 -WatchPath "testdir"-Command python -Arguments foo -FileFilters "^(.+)\.py$","^(.+)\.txt$"
 param(
     $WatchPath=".\"         # Path of directory to watch
     ,$Command="powershell"  # Command/program to pass the file to
     ,$Arguments=""          # Arguments to pass to the program
-    ,[string[]]$FileFilters=@("*.*")
+    ,[string[]]$FileFilters=@("^.+\.ps1$")
 )
 
 Clear-Host
