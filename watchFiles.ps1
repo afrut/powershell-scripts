@@ -22,7 +22,7 @@ if ($Help -or $h)
     Write-Host "Basic Usage:"
     Write-Host "watchFiles [-h,-Help]"
     Write-Host ""
-    Write-Host 'watchFiles -WatchPath "path/to/directory" -Command someprogram -Arguments argsToPassToSomeProgram -FileFilters "regexPattern1","regexPattern2" -Clear'
+    Write-Host 'watchFiles -WatchPath "path/to/directory" -Command someprogram -Arguments arg1,arg2,arg3 -FileFilters "regexPattern1","regexPattern2","regexPattern3" -Clear'
 }
 else
 {
