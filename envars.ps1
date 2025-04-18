@@ -28,8 +28,8 @@ $machinepathout = "outputs/env-path-machine.txt"
 $machinepath.Split(";") | Where-Object {$_.Length -gt 0} | Select-Object -Unique |
     Out-File -File $machinepathout
 
-# Read in new user path variable.
-$usrpathnew = (Get-Content "outputs/env-path-usr-new.txt") -Join ";"
-$machinepathnew = (Get-Content "outputs/env-path-machine-new.txt") -Join ";"
-[Environment]::SetEnvironmentVariable("PATH", $usrpathnew, [System.EnvironmentVariableTarget]::User)
-[Environment]::SetEnvironmentVariable("PATH", $machinepathnew, [System.EnvironmentVariableTarget]::Machine)
+# # Read in new user path variable.
+# $usrpathnew = (Get-Content "outputs/env-path-usr-new.txt") -Join ";"
+# $machinepathnew = (Get-Content "outputs/env-path-machine-new.txt") -Join ";"
+# [Environment]::SetEnvironmentVariable("PATH", $usrpathnew, [System.EnvironmentVariableTarget]::User)
+# [Environment]::SetEnvironmentVariable("PATH", $machinepathnew, [System.EnvironmentVariableTarget]::Machine)
